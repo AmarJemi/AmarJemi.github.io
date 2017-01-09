@@ -1,0 +1,605 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Amaranthine Quest",
+    "type": "object",
+    "description": "Here you can create a new quest.",
+    "required": ["label", "locations"],
+    "additionalProperties": false,
+    "properties": {
+        "label": {
+            "type": "string",
+            "title": "Label*",
+            "description": "The primary quest object that encapsulates the entire quest.",
+            "default": "Getting started"
+        },
+        "locations": {
+            "type": "array",
+            "title": "Locations*",
+            "uniqueItems": true,
+            "format": "tabs",
+            "description": "Individual entry points that appear in the Quests section of the location panel.",
+            "items": {
+                "type": "object",
+                "title": "Quest Location",
+                "headerTemplate": "{{ i1 }} - {{ self.name }}",
+                "required": ["name", "label", "requirements", "description", "choices"],
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name*",
+                        "description": "Unique entry point name",
+                        "default": "gettingstarted - start"
+                    },
+                    "label": {
+                        "type": "string",
+                        "title": "Label*",
+                        "description": "Entry point label to show in quest section of the location panel.",
+                        "default": "Getting started"
+                    },
+                    "description": {
+                        "type": "string",
+                        "format": "textarea",
+                        "title": "Description*",
+                        "description": "Text to show when quest is clicked",
+                        "default": "Hello!"
+                    },
+                    "requirements": {
+                        "type": "array",
+                        "title": "Requirements*",
+                        "uniqueItems": true,
+                        "format": "tabs",
+                        "description": "Requirements to see this quest part in the location panel.",
+                        "items": {
+                            "headerTemplate": "{{ i1 }} - {{ self.type }}",
+                            "oneOf": [
+                                { "$ref": "#/definitions/requirementLocation" },
+                                { "$ref": "#/definitions/requirementFlag" },
+                                { "$ref": "#/definitions/requirementItem" },
+                                { "$ref": "#/definitions/requirementJournalProgress" },
+                                { "$ref": "#/definitions/requirementLevel" }
+                            ]
+                        }
+                    },
+                    "choices": {
+                        "type": "array",
+                        "title": "Choices*",
+                        "uniqueItems": true,
+                        "format": "tabs",
+                        "description": "Possible replies",
+                        "items": {
+                            "headerTemplate": "{{ i1 }} - {{{trimString self.label}}}",
+                            "$ref": "#/definitions/choice"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "requirementLocation": {
+            "title": "location",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["location"]
+                },
+                "location": {
+                    "type": "string",
+                    "title": "Location*",
+                    "enum": ["Aeon Bay", "Bevroren", "Cadenberge", "Cadenberge Pasture", "Celestial Oasis", "Dire Cove", "Disenchanted Forest", "Divine Delta", "Ember Vale", "Engel Lake", "Fiery Port", "Fishing Spot", "Frusen Mountains", "Grim Mire", "Heart Beach", "Immortelle", "Insular Village", "Izanna Port", "Lazuli Desert", "Obsidian Fields", "Port Melilot", "Port Nopt", "Pyre Island", "Rapture Falls", "Roseland", "Scoria Crossroads", "Silver Lagoon", "Syrianna Jungle", "Teddy Bear Isles", "Valentine Forest", "Verre Forest", "Yawning Forge", "Yawning Mines"]
+                }
+            },
+            "required": ["type", "location"],
+            "additionalProperties": false
+        },
+        "requirementFlag": {
+            "title": "flag",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["flag"]
+                },
+                "flag": {
+                    "type": "string",
+                    "title": "Flag*",
+                    "default": "gettingstarted"
+                },
+                "owner": {
+                    "type": "string",
+                    "title": "Owner*",
+                    "default": "player",
+                    "enum": ["player", "guild"]
+                },
+                "comparison": {
+                    "type": "string",
+                    "title": "Comparison*",
+                    "enum": ["=", "<>", ">", ">=", "<", "<="]
+                },
+                "value": {
+                    "type": ["null", "integer"],
+                    "title": "Value*",
+                    "minimum": 0,
+                    "format": "number"
+                }
+            },
+            "required": ["type", "flag", "owner", "comparison", "value"],
+            "additionalProperties": false
+        },
+        "requirementItem": {
+            "title": "item",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["item"]
+                },
+                "item": {
+                    "type": "string",
+                    "title": "Item*"
+                },
+                "comparison": {
+                    "type": "string",
+                    "title": "Comparison*",
+                    "enum": ["=", "<>", ">", ">=", "<", "<="]
+                },
+                "count": {
+                    "type": "integer",
+                    "title": "Count*",
+                    "minimum": 0,
+                    "format": "number"
+                }
+            },
+            "required": ["type", "item", "comparison", "count"],
+            "additionalProperties": false
+        },
+        "requirementJournalProgress": {
+            "title": "journal progress",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["journal progress"]
+                },
+                "name": {
+                    "type": "string",
+                    "title": "Name*",
+                    "default": "gettingstarted - cherries"
+                },
+                "owner": {
+                    "type": "string",
+                    "title": "Owner*",
+                    "default": "player",
+                    "enum": ["player", "guild"]
+                },
+                "comparison": {
+                    "type": "string",
+                    "title": "Comparison*",
+                    "enum": ["=", "<>", ">", ">=", "<", "<="]
+                },
+                "value": {
+                    "type": "integer",
+                    "title": "Value*",
+                    "minimum": 0,
+                    "format": "number"
+                }
+            },
+            "required": ["type", "name", "owner", "comparison", "value"],
+            "additionalProperties": false
+        },
+        "requirementLevel": {
+            "title": "level",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["level"]
+                },
+                "skill": {
+                    "type": "string",
+                    "title": "Skill*",
+                    "enum": ["Alchemy", "Carpentry", "Combat", "Cooking", "Fishing", "Gathering", "Magic", "Mining", "Smithing", "Speed", "Tailoring", "Woodcutting"]
+                },
+                "comparison": {
+                    "type": "string",
+                    "title": "Comparison*",
+                    "enum": ["=", "<>", ">", ">=", "<", "<="]
+                },
+                "level": {
+                    "type": "integer",
+                    "title": "Count*",
+                    "minimum": 0,
+                    "format": "number"
+                }
+            },
+            "required": ["type", "skill", "comparison", "level"],
+            "additionalProperties": false
+        },
+        "choice": {
+            "title": "choice",
+            "type": "object",
+            "required": ["label", "description"],
+            "additionalProperties": false,
+            "properties": {
+                "label": {
+                    "type": "string",
+                     "format": "textarea",
+                    "title": "Label*",
+                    "description": "Your answer to the previous dialog"
+                },
+                "description": {
+                    "type": "string",
+                    "format": "textarea",
+                    "title": "Description*",
+                    "description": "NPC response"
+                },
+                "requirements": {
+                    "type": "array",
+                    "title": "Requirements",
+                    "uniqueItems": true,
+                    "format": "tabs",
+                    "description": "Requirements to see this this choice",
+                    "items": {
+                        "headerTemplate": "{{ i1 }} - {{ self.type }}",
+                        "oneOf": [
+                            { "$ref": "#/definitions/requirementLocation" },
+                            { "$ref": "#/definitions/requirementFlag" },
+                            { "$ref": "#/definitions/requirementItem" },
+                            { "$ref": "#/definitions/requirementJournalProgress" },
+                            { "$ref": "#/definitions/requirementLevel" }
+                        ]
+                    }
+                },
+                "choices": {
+                    "type": "array",
+                    "title": "Choices",
+                    "uniqueItems": true,
+                    "format": "tabs",
+                    "description": "Possible replies",
+                    "items": {
+                        "headerTemplate": "{{ i1 }} - {{{trimString self.label }}}",
+                        "$ref": "#/definitions/choice"
+                    }
+                },
+                "events": {
+                    "type": "array",
+                    "title": "Events",
+                    "uniqueItems": true,
+                    "format": "tabs",
+                    "description": "Events that follow this choice",
+                    "items": {
+                        "headerTemplate": "{{ i1 }} - {{ self.type }}",
+                        "oneOf": [
+                            { "$ref": "#/definitions/eventAddItem" },
+                            { "$ref": "#/definitions/eventRemoveItem" },
+                            { "$ref": "#/definitions/eventJump" },
+                            { "$ref": "#/definitions/eventAddJournal" },
+                            { "$ref": "#/definitions/eventAddJournalItem" },
+                            { "$ref": "#/definitions/eventAddJournalItemCat" },
+                            { "$ref": "#/definitions/eventAddJournalNpc" },
+                            { "$ref": "#/definitions/eventRemoveJournal" },
+                            { "$ref": "#/definitions/eventAddExperience" },
+                            { "$ref": "#/definitions/eventSetFlag" },
+                            { "$ref": "#/definitions/eventClearEntry" },
+                            { "$ref": "#/definitions/eventReturnToTown" }
+                        ]
+                    }
+                }
+            }
+        },
+        "eventAddItem": {
+            "title": "add item",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["add item"]
+                },
+                "item": {
+                    "type": "string",
+                    "title": "Item*"
+                },
+                "count": {
+                    "type": "integer",
+                    "title": "Count*",
+                    "minimum": 0,
+                    "format": "number"
+                },
+                "reason": {
+                    "type": "string",
+                    "title": "Reason"
+                },
+                "requirements": {
+                    "type": "array",
+                    "title": "Requirements",
+                    "uniqueItems": true,
+                    "format": "tabs",
+                    "description": "Requirements for this event",
+                    "items": {
+                        "headerTemplate": "{{ i1 }} - {{ self.type }}",
+                        "oneOf": [
+                            { "$ref": "#/definitions/requirementLocation" },
+                            { "$ref": "#/definitions/requirementFlag" },
+                            { "$ref": "#/definitions/requirementItem" },
+                            { "$ref": "#/definitions/requirementJournalProgress" },
+                            { "$ref": "#/definitions/requirementLevel" }
+                        ]
+                    }
+                }
+            },
+            "required": ["type", "item", "count"],
+            "additionalProperties": false
+        },
+        "eventRemoveItem": {
+            "title": "remove item",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["remove item"]
+                },
+                "item": {
+                    "type": "string",
+                    "title": "Item*"
+                },
+                "count": {
+                    "type": "integer",
+                    "title": "Count*",
+                    "minimum": 0,
+                    "format": "number"
+                },
+                "requirements": {
+                    "type": "array",
+                    "title": "Requirements",
+                    "uniqueItems": true,
+                    "format": "tabs",
+                    "description": "Requirements for this event",
+                    "items": {
+                        "headerTemplate": "{{ i1 }} - {{ self.type }}",
+                        "oneOf": [
+                            { "$ref": "#/definitions/requirementLocation" },
+                            { "$ref": "#/definitions/requirementFlag" },
+                            { "$ref": "#/definitions/requirementItem" },
+                            { "$ref": "#/definitions/requirementJournalProgress" },
+                            { "$ref": "#/definitions/requirementLevel" }
+                        ]
+                    }
+                }
+            },
+            "required": ["type", "item", "count"],
+            "additionalProperties": false
+        },
+        "eventJump": {
+            "title": "jump",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["jump"]
+                },
+                "label": {
+                    "type": "string",
+                    "title": "Label*",
+                    "description": "Jumps to a given quest label."
+                }
+            },
+            "required": ["type", "label"],
+            "additionalProperties": false
+        },
+        "eventAddJournal": {
+            "title": "add journal",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["add journal"]
+                },
+                "owner": {
+                    "type": "string",
+                    "title": "Owner*",
+                    "enum": ["player", "guild"]
+                },
+                "name": {
+                    "type": "string",
+                    "title": "Name*"
+                },
+                "label": {
+                    "type": "string",
+                    "title": "Label*",
+                    "default": "Getting Started"
+                },
+                "description": {
+                    "type": "string",
+                    "title": "Description*"
+                },
+                "ordering": {
+                    "type": "integer",
+                    "title": "Ordering*",
+                    "format": "number"
+                }
+            },
+            "required": ["type", "owner", "name", "label", "description", "ordering"],
+            "additionalProperties": false
+        },
+        "eventAddJournalItem": {
+            "title": "add journal (item)",
+            "allOf": [
+                { "$ref": "#/definitions/eventAddJournal" },
+                { 
+                    "properties": {
+                        "progress type": {
+                            "type": "string",
+                            "title": "Progress type*",
+                            "enum": ["item"]
+                        },
+                        "item": {
+                            "type": "string",
+                            "title": "Item*"
+                        },
+                        "total": {
+                            "type": "integer",
+                            "title": "Total*",
+                            "minimum": 0,
+                            "format": "number"
+                        }
+                    },
+                    "required": ["progress type", "item", "total"]
+                }
+            ]
+        },
+        "eventAddJournalItemCat": {
+            "title": "add journal (item category)",
+            "allOf": [
+                { "$ref": "#/definitions/eventAddJournal" },
+                { 
+                    "properties": {
+                        "progress type": {
+                            "type": "string",
+                            "title": "Progress type*",
+                            "enum": ["item category"]
+                        },
+                        "item category": {
+                            "type": "string",
+                            "title": "Item category*"
+                        },
+                        "total": {
+                            "type": "integer",
+                            "title": "Total*",
+                            "minimum": 0,
+                            "format": "number"
+                        }
+                    },
+                    "required": ["progress type", "item category", "total"]
+                }
+            ]
+        },
+        "eventAddJournalNpc": {
+            "title": "add journal (npc)",
+            "allOf": [
+                { "$ref": "#/definitions/eventAddJournal" },
+                { 
+                    "properties": {
+                        "progress type": {
+                            "type": "string",
+                            "title": "Progress type*",
+                            "enum": ["npc"]
+                        },
+                        "npc": {
+                            "type": "string",
+                            "title": "npc*"
+                        },
+                        "total": {
+                            "type": "integer",
+                            "title": "Total*",
+                            "minimum": 0,
+                            "format": "number"
+                        }
+                    },
+                    "required": ["progress type", "npc", "total"]
+                }
+            ]
+        },
+        "eventRemoveJournal": {
+            "title": "remove journal",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["remove journal"]
+                },
+                "owner": {
+                    "type": "string",
+                    "title": "Owner*",
+                    "enum": ["player", "guild"]
+                },
+                "name": {
+                    "type": "string",
+                    "title": "Name*"
+                }
+            },
+            "required": ["type", "owner", "name"],
+            "additionalProperties": false
+        },
+        "eventAddExperience": {
+            "title": "add experience",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["add experience"]
+                },
+                "skill": {
+                    "type": "string",
+                    "title": "Skill*",
+                    "enum": ["player", "guild", "Alchemy", "Carpentry", "Combat", "Cooking", "Fishing", "Gathering", "Magic", "Mining", "Smithing", "Speed", "Tailoring", "Woodcutting"]
+                },
+                "count": {
+                    "type": "integer",
+                    "title": "Count*",
+                    "minimum": 0,
+                    "format": "number"
+                },
+                "reason": {
+                    "type": "string",
+                    "title": "Reason"
+                }
+            },
+            "required": ["type", "skill", "count"],
+            "additionalProperties": false
+        },
+        "eventSetFlag": {
+            "title": "set flag",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["set flag"]
+                },
+                "owner": {
+                    "type": "string",
+                    "title": "Owner*",
+                    "enum": ["player", "guild"]
+                },
+                "flag": {
+                    "type": "string",
+                    "title": "Flag*"
+                },
+                "value": {
+                    "type": "integer",
+                    "title": "Value*",
+                    "minimum": 0,
+                    "format": "number"
+                }
+            },
+            "required": ["type", "owner", "flag", "value"],
+            "additionalProperties": false
+        },
+        "eventClearEntry": {
+            "title": "clear entry",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "description": "Updates the location's list of quest entries",
+                    "enum": ["clear entry"]
+                }
+            },
+            "required": ["type"],
+            "additionalProperties": false
+        },
+        "eventReturnToTown": {
+            "title": "return to town",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type*",
+                    "enum": ["return to town"]
+                }
+            },
+            "required": ["type"],
+            "additionalProperties": false
+        }
+    }
+}
