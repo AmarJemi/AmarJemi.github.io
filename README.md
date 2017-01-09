@@ -1,2 +1,2 @@
-# questeditor
-Quest Editor for Amaranthine
+# Quest Editor for Amaranthine
+
